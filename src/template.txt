@@ -1,0 +1,46 @@
+#!/bin/bash
+#
+# HTB Traffic Shaping script
+#
+# This script was automatically created with generator on page:
+#      http://robert.nowotniak.com/htb/
+#
+
+tc qdisc del root dev $(OUT_IFACE) 2> /dev/null
+tc qdisc del root dev $(IN_IFACE) 2> /dev/null
+
+if [ "$1" != 'start' ]; then
+        exit
+fi
+
+echo htb...
+
+#
+# Outgoing traffic classes
+#
+
+$(OUT_CLASSES)
+
+#
+# Incoming traffic classes
+#
+
+$(IN_CLASSES)
+
+
+iptables -t mangle -F POSTROUTING
+
+#
+# Outgoing traffic rules
+#
+# XXX: You have to tune following rules by hand (assigning packets to classes)
+
+$(OUT_RULES)
+
+#
+# Incoming traffic rules
+#
+# XXX: You have to tune following rules by hand (assigning packets to classes)
+
+$(IN_RULES)
+
